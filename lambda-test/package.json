@@ -1,0 +1,18 @@
+{
+  "name": "lambda-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "compile": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.83",
+    "@types/node": "^16.10.2",
+    "aws-sdk": "2.997.0",
+    "typescript": "^4.4.3"
+  },
+  "author": "",
+  "license": "ISC"
+}
