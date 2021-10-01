@@ -29,5 +29,5 @@ do
     npm run compile;
     cd $ROOT_DIR;
     zip -j $TARGET_DIR/$DIR.zip $DIR/build/*
-    find interaction-lambda/build -type f \( -exec sha256sum "$PWD"/{} \; \) | awk '{print $1}' | sort | sha256sum > terraform/input/$DIR.sha256sum
+    find $DIR/build -type f \( -exec sha256sum "$PWD"/{} \; \) | awk '{print $1}' | sort | sha256sum > terraform/input/$DIR.sha256sum
 done
