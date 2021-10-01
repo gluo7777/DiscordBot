@@ -5,6 +5,15 @@
 		},
 		{
 			"path": "lambda-test"
+		},
+		{
+			"path": "command-lambda"
+		},
+		{
+			"path": "interaction-lambda"
+		},
+		{
+			"path": "terraform"
 		}
 	]
 }

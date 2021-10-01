@@ -1,5 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
+/**
+ * Acknowledges initial request from Discord.
+ */
 export const handler = async (
     event: APIGatewayProxyEvent
 ) : Promise<APIGatewayProxyResult> => {
