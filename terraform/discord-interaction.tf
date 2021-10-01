@@ -8,7 +8,7 @@ resource "aws_lambda_function" "interaction" {
   role          = aws_iam_role.interaction.arn
   handler       = "app.handler"
   runtime       = "nodejs14.x"
-  filename      = "${path.root}/interaction-lambda.zip"
+  filename      = "${path.root}/input/interaction-lambda.zip"
   environment {
     variables = {
       command_function_arn = "TODO"
