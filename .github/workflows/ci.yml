@@ -22,22 +22,10 @@ jobs:
             cd ..;
             zip -j $TARGET_DIR/$DIR.zip $DIR/build/*
           done
-      - uses: actions/upload-artifact@v2
-        with:
-          name: tf_input
-          path: terraform/input
-          retention-days: 1
-  terraform:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.8
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      - uses: actions/download-artifact@v2
-        with:
-          name: tf_input
       - run: terraform init
       - id: plan
         run: terraform plan
