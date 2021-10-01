@@ -12,13 +12,14 @@ resource "aws_lambda_function" "interaction" {
   source_code_hash = filebase64sha256("${path.root}/input/interaction-lambda.sha256sum")
   environment {
     variables = {
-      command_function_arn = "TODO"
+      command_function_arn = aws_lambda_function.command.arn
+      discord_api_key      = aws_secretsmanager_secret_version.discord_api_key.arn
     }
   }
   tags = var.tags
   # must be able to respond to interaction api calls within 3 seconds
   # cold start up can take 1 second
-  timeout = 2
+  timeout = 3
 }
 
 ########################################################################################
@@ -48,4 +49,30 @@ resource "aws_iam_role" "interaction" {
 resource "aws_iam_role_policy_attachment" "interaction-read-secrets" {
   role       = aws_iam_role.interaction.name
   policy_arn = aws_iam_policy.read-secret.arn
+}
+
+resource "aws_iam_policy" "invoke-command" {
+  name = "${var.prefix}-invoke-command"
+  path = var.iam_path
+  policy = jsonencode({
+    Version = var.iam_policy_version
+    Statement = [
+      {
+        Effect   = "Allow"
+        Resource = aws_lambda_function.command.arn
+        Action = [
+          "lambda:InvokeFunction"
+        ]
+      }
+    ]
+  })
+  tags = var.tags
+  lifecycle {
+    create_before_destroy = false
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "interaction-invoke-command" {
+  role       = aws_iam_role.interaction.name
+  policy_arn = aws_iam_policy.invoke-command.arn
 }

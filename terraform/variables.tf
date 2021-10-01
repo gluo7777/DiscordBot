@@ -31,6 +31,12 @@ variable "iam_policy_version" {
 variable "iam_path" {
   default = "/discord/"
 }
+
+variable "discord_api_key" {
+  type      = string
+  sensitive = true
+}
+
 variable "tags" {
   type = map(string)
   default = {
