@@ -11,18 +11,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - run: |
-          TARGET_DIR=terraform/input
-          NODE_DIRS=("command-lambda" "interaction-lambda")
-          for DIR in ${NODE_DIRS[@]}
-          do
-            echo "##################################   Creating archive for $DIR   ##################################"
-            cd $DIR;
-            npm install;
-            npm run compile;
-            cd ..;
-            zip -j $TARGET_DIR/$DIR.zip $DIR/build/*
-          done
+      - run: . scripts/build.sh
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.8
