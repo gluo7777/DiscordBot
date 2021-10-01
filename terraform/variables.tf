@@ -1,3 +1,6 @@
+########################################################################################
+# Input
+########################################################################################
 variable "profile" {
   description = "AWS CLI profile"
   default     = "default"
@@ -8,11 +11,11 @@ variable "prefix" {
 }
 
 variable "iam_policy_version" {
-  default = "2021-10-17"
+  default = "2012-10-17"
 }
 
 variable "iam_path" {
-  default = "/DiscordBot/"
+  default = "/discord/"
 }
 
 variable "tags" {
