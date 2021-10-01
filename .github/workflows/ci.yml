@@ -1,16 +1,45 @@
-
 # https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions
 
 name: ci
 on: [push]
 jobs:
-  check-bats-version:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - run: npm install -g bats
-      - run: bats -v
-      - run: echo "123"
+      - run: |
+          TARGET_DIR=terraform/input
+          NODE_DIRS=("command-lambda" "interaction-lambda")
+          for DIR in ${NODE_DIRS[@]}
+          do
+            echo "##################################   Creating archive for $DIR   ##################################"
+            cd $DIR;
+            npm install;
+            npm run compile;
+            cd ..;
+            zip -j $TARGET_DIR/$DIR.zip $DIR/build/*
+          done
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tf_input
+          path: terraform/input
+          retention-days: 1
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.8
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: tf_input
+      - run: terraform init
+      - id: plan
+        run: terraform plan
+      - id: apply
+        run: terraform apply -auto-approve
