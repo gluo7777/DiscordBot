@@ -21,8 +21,8 @@ variable "role_arn" {}
 provider "aws" {
   access_key = var.access_key
   secret_key = var.secret_key
-  region  = "us-east-1"
-  profile = var.profile
+  region     = "us-east-1"
+  profile    = var.profile
   assume_role {
     role_arn = var.role_arn
   }

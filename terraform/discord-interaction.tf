@@ -3,12 +3,13 @@
 ########################################################################################
 
 resource "aws_lambda_function" "interaction" {
-  function_name = "${var.prefix}-interaction"
-  description   = "intercepts discord interaction requests"
-  role          = aws_iam_role.interaction.arn
-  handler       = "app.handler"
-  runtime       = "nodejs14.x"
-  filename      = "${path.root}/input/interaction-lambda.zip"
+  function_name    = "${var.prefix}-interaction"
+  description      = "intercepts discord interaction requests"
+  role             = aws_iam_role.interaction.arn
+  handler          = "app.handler"
+  runtime          = "nodejs14.x"
+  filename         = "${path.root}/input/interaction-lambda.zip"
+  source_code_hash = filebase64sha256("${path.root}/input/interaction-lambda.sha256sum")
   environment {
     variables = {
       command_function_arn = "TODO"
