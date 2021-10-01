@@ -27,7 +27,10 @@ jobs:
           terraform_version: 1.0.8
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       - run: terraform init
+        working-directory: terraform
       - id: plan
         run: terraform plan
+        working-directory: terraform
       - id: apply
         run: terraform apply -auto-approve
+        working-directory: terraform
