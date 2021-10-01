@@ -5,12 +5,12 @@ resource "aws_route53_record" "discord" {
   alias {
     name                   = aws_api_gateway_domain_name.discord.regional_domain_name
     evaluate_target_health = false
+    zone_id                = local.zone
   }
-  ttl = 300
 }
 
 resource "aws_acm_certificate" "discord" {
-  domain_name       = "${var.subdomain}.${data.aws_route53_zone.name}"
+  domain_name       = "${var.subdomain}.${data.aws_route53_zone.domain.name}"
   validation_method = "DNS"
   tags              = var.tags
   lifecycle {

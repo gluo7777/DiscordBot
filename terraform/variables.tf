@@ -5,7 +5,7 @@
 locals {
   zone    = data.aws_route53_zone.domain.id
   account = data.aws_caller_identity.current.account_id
-  reigon  = data.aws_region.current.name
+  region  = data.aws_region.current.name
 }
 
 ########################################################################################

@@ -16,7 +16,7 @@ resource "aws_api_gateway_rest_api" "discord" {
 ########################################################################################
 
 resource "aws_api_gateway_deployment" "discord" {
-  rest_api_id = local.rest_api_id
+  rest_api_id = aws_api_gateway_rest_api.discord.id
   triggers = {
     redeployment = filebase64sha256("${path.module}/apigateway.tf")
   }
@@ -58,9 +58,10 @@ resource "aws_api_gateway_resource" "interactions" {
 ########################################################################################
 
 resource "aws_api_gateway_method" "post-interactions" {
-  rest_api_id = aws_api_gateway_rest_api.discord.id
-  resource_id = aws_api_gateway_resource.interactions.id
-  http_method = "POST"
+  rest_api_id   = aws_api_gateway_rest_api.discord.id
+  resource_id   = aws_api_gateway_resource.interactions.id
+  http_method   = "POST"
+  authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "post-interactions" {

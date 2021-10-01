@@ -2,3 +2,4 @@ node_modules
 build
 *.zip
 .terraform*
+*.sha256sum
