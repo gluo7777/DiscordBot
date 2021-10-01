@@ -27,6 +27,7 @@ resource "aws_lambda_function" "interaction" {
 resource "aws_iam_role" "interaction" {
   name        = "${var.prefix}-interaction"
   description = "Execution role for discord interaction function"
+  path        = var.iam_path
   assume_role_policy = jsonencode({
     Version = var.iam_policy_version
     Statement = [

@@ -11,6 +11,10 @@ variable "iam_policy_version" {
   default = "2021-10-17"
 }
 
+variable "iam_path" {
+  default = "/DiscordBot/"
+}
+
 variable "tags" {
   type = map(string)
   default = {

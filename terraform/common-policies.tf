@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "read-secret" {
   name = "${var.prefix}-read-secrets"
-  path = var.prefix
+  path = var.iam_path
   policy = jsonencode({
     Version = var.iam_policy_version
     Statement = [
