@@ -17,6 +17,9 @@ resource "aws_api_gateway_rest_api" "discord" {
 
 resource "aws_api_gateway_deployment" "discord" {
   rest_api_id = aws_api_gateway_rest_api.discord.id
+  depends_on = [
+    aws_api_gateway_integration.post-interactions
+  ]
   triggers = {
     redeployment = filebase64sha256("${path.module}/apigateway.tf")
   }
@@ -33,8 +36,10 @@ resource "aws_api_gateway_stage" "discord" {
 }
 
 resource "aws_api_gateway_domain_name" "discord" {
-  certificate_arn = aws_acm_certificate_validation.discord.certificate_arn
   domain_name     = aws_acm_certificate.discord.domain_name
+  certificate_arn = aws_acm_certificate_validation.discord.certificate_arn
+  security_policy = "TLS_1_2"
+  tags            = var.tags
 }
 
 resource "aws_api_gateway_base_path_mapping" "discord" {
@@ -65,8 +70,8 @@ resource "aws_api_gateway_method" "post-interactions" {
 }
 
 resource "aws_api_gateway_integration" "post-interactions" {
-  resource_id             = aws_api_gateway_method.post-interactions.id
   rest_api_id             = aws_api_gateway_method.post-interactions.rest_api_id
+  resource_id             = aws_api_gateway_method.post-interactions.resource_id
   type                    = "AWS_PROXY"
   http_method             = "POST"
   integration_http_method = "POST"
