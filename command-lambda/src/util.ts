@@ -22,7 +22,7 @@ export async function get_secret(secret: string): Promise<string> {
         if (data && 'SecretString' in data) {
             if(!data.SecretString)
                 throw Error('SecretString is null');
-            return data.SecretString;
+            return JSON.parse(data.SecretString)['key'];
         }
         throw Error('SecretString missing from data');
     }
