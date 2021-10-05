@@ -94,7 +94,7 @@ resource "aws_iam_role" "lambda" {
   tags                  = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "interaction-AWSLambdaBasicExecutionRole" {
+resource "aws_iam_role_policy_attachment" "lambda-AWSLambdaBasicExecutionRole" {
   for_each   = local.lambdas
   role       = aws_iam_role.lambda[each.key].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
