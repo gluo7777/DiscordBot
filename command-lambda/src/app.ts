@@ -23,13 +23,11 @@ export const handler = async (
     const bot_token = await get_bot_token;
     const webhook_url = `${discord_api_url}/webhooks/${await application_id}/${interaction_token}`;
     const discord_rsp = await axios.post(webhook_url, {
-        jsonBody: {
-            tts: false,
-            content: "Hello World!",
-            embeds: [],
-            allowed_mentions: {
-                parse: []
-            }
+        tts: false,
+        content: "Hello World!",
+        embeds: [],
+        allowed_mentions: {
+            parse: []
         },
     }, {
         headers: {
