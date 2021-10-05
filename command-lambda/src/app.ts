@@ -13,6 +13,7 @@ const get_application_id = get_secret(get_env('discord_api_key'));
 export const handler = async (
     event: DiscordEventRequest
 ) : Promise<string> => {
+    console.log('Command request', event);
     // POST /webhooks/<application_id>/<interaction_token> to send a new followup message
     // https://discord.com/developers/docs/interactions/receiving-and-responding#create-followup-message
     const jsonBody = JSON.parse(event.jsonBody);
@@ -30,9 +31,9 @@ export const handler = async (
     };
     const application_id = await get_application_id;
     const webhook_url = `${discord_api_url}/webhooks/${await application_id}/${interaction_id}`;
-    axios.post(webhook_url, {
+    const discord_rsp = await axios.post(webhook_url, {
         jsonBody: response
     });
- 
+    console.log('Command response', discord_rsp);
     return 'OK';
 }
