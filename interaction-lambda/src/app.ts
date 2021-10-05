@@ -1,51 +1,62 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Lambda } from 'aws-sdk';
-import { verifyKey } from 'discord-interactions';
-import { get_env, error_401 } from './util';
+import { get_env, error_401, verifyEvent } from './util';
+import { DiscordEventRequest } from './types';
 
-// const lambda = new Lambda();
+const lambda = new Lambda();
 const public_key = get_env("discord_public_key");
+const command_function_arn = get_env("command_function_arn");
 
 export const handler = async (
     event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-    const { body, headers } = event;
+    const { headers, body } = event;
     if (!headers || !body) {
-        return error_401('headers or body is null.');
-    }
-    const timestamp = headers['x-signature-timestamp'];
-    const signature = headers['x-signature-ed25519'];
-    if (!timestamp || !signature) {
-        return error_401('timestamp or signature is null.');
-    }
-    const isValidRequest = verifyKey(body, signature, timestamp, public_key);
-    if (!isValidRequest) {
-        return error_401('signature validation was unsuccessful.')
-    }
-    const input = JSON.parse(body);
-    const inputType: number = input['type'];
-    if (inputType === 1) {
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                type: 1
-            })
-        };
-    } else {
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                type: 4,
-                data: {
-                    tts: false,
-                    content: 'Wow, you sent a command. How nice!',
-                    embeds: [],
-                    allowed_mentions: {
-                        parse: []
-                    }
-                }
-            })
-        };
+        return error_401('request header or body is missing');
     }
 
+    const timestamp = headers['x-signature-timestamp'];
+    const signature = headers['x-signature-ed25519'];
+    if (!timestamp)
+        return error_401('timestamp is missing from request headers.');
+    if (!signature)
+        return error_401('signature is missing from request headers.');
+
+    const discordEvent: DiscordEventRequest = {
+        timestamp: timestamp,
+        signature: signature,
+        jsonBody: body
+    };
+    const verify_event = verifyEvent(public_key, discordEvent);
+
+    const input = JSON.parse(body);
+    const inputType: number = input['type'];
+    switch (inputType) {
+        case 1:
+            if (await verify_event) {
+                return {
+                    statusCode: 200,
+                    body: JSON.stringify({
+                        type: 1
+                    })
+                };
+            }
+            break;
+        case 2:
+            const invoke_lambda = lambda.invoke({
+                FunctionName: command_function_arn,
+                Payload: JSON.stringify(discordEvent),
+                InvocationType: 'Event'
+            }).promise();
+            if (await Promise.all([verify_event, invoke_lambda])) {
+                return {
+                    statusCode: 200,
+                    body: JSON.stringify({
+                        type: 5
+                    })
+                };
+            }
+            break;
+        }
+    return error_401('request failed');
 }

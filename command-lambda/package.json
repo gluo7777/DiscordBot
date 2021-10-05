@@ -15,5 +15,8 @@
     "typescript": "^4.4.3"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.22.0"
+  }
 }
