@@ -45,6 +45,7 @@ resource "aws_lambda_function" "command" {
     variables = {
       discord_api_key = aws_secretsmanager_secret_version.discord_api_key.arn
       discord_api_url = "https://discord.com/api/v9"
+      discord_bot_token = aws_secretsmanager_secret_version.discord_bot_token.arn
     }
   }
   tags = var.tags

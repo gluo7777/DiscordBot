@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Lambda } from 'aws-sdk';
 import { get_env, error_401, verifyEvent } from './util';
 import { DiscordEventRequest } from './types';
+import e from 'express';
 
 const lambda = new Lambda();
 const public_key = get_env("discord_public_key");
@@ -10,6 +11,7 @@ const command_function_arn = get_env("command_function_arn");
 export const handler = async (
     event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
+    console.log('Interaction request', event);
     const { headers, body } = event;
     if (!headers || !body) {
         return error_401('request header or body is missing');
@@ -34,6 +36,7 @@ export const handler = async (
     switch (inputType) {
         case 1:
             if (await verify_event) {
+                console.log('Responding to ping');
                 return {
                     statusCode: 200,
                     body: JSON.stringify({
@@ -49,6 +52,7 @@ export const handler = async (
                 InvocationType: 'Event'
             }).promise();
             if (await Promise.all([verify_event, invoke_lambda])) {
+                console.log('Respond to command eventually');
                 return {
                     statusCode: 200,
                     body: JSON.stringify({

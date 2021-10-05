@@ -8,6 +8,7 @@ import { DiscordEventRequest } from './types';
  * @returns response with 401 status code
  */
 export const error_401 = (msg: string): APIGatewayProxyResult => {
+    console.log('Interaction validation failed', msg);
     return {
         statusCode: 401,
         body: JSON.stringify(`Invalid input - ${msg}`)
