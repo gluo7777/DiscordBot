@@ -1,22 +1,24 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Lambda } from 'aws-sdk';
 import { verifyKey } from 'discord-interactions';
+import { get_env, error_401 } from './util';
 
-const lambda = new Lambda();
+// const lambda = new Lambda();
+const public_key = get_env("discord_public_key");
 
 export const handler = async (
     event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-    const { body, queryStringParameters } = event;
-    if (!queryStringParameters || !body) {
-        return error_401('query string or body is null.');
+    const { body, headers } = event;
+    if (!headers || !body) {
+        return error_401('headers or body is null.');
     }
-    const timestamp = queryStringParameters['X-Signature-Timestamp'];
-    const signature = queryStringParameters['X-Signature-Ed25519'];
+    const timestamp = headers['x-signature-timestamp'];
+    const signature = headers['x-signature-ed25519'];
     if (!timestamp || !signature) {
         return error_401('timestamp or signature is null.');
     }
-    const isValidRequest = verifyKey(body, signature, timestamp, 'MY_CLIENT_PUBLIC_KEY');
+    const isValidRequest = verifyKey(body, signature, timestamp, public_key);
     if (!isValidRequest) {
         return error_401('signature validation was unsuccessful.')
     }
@@ -46,16 +48,4 @@ export const handler = async (
         };
     }
 
-}
-
-/**
- * Discord expects a 200 for success and 401 for any errors (not only authorization errors)
- * @param msg 
- * @returns response with 401 status code
- */
-const error_401 = (msg: string = "Invalid input"): APIGatewayProxyResult => {
-    return {
-        statusCode: 401,
-        body: JSON.stringify(`Bad request signature - ${msg}`)
-    }
 }

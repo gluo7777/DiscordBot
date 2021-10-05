@@ -3,3 +3,5 @@ build
 *.zip
 .terraform*
 *.sha256sum
+terraform/input
+terraform/output

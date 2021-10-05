@@ -13,3 +13,7 @@ https://discord.com/developers/docs/interactions/application-commands
 or create slash command
 https://discord.com/developers/docs/interactions/application-commands#slash-commands
 
+
+## TODO:
+
+- use terraform to archive file instead of build.sh

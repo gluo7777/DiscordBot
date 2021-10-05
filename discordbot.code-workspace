@@ -4,9 +4,6 @@
 			"path": "."
 		},
 		{
-			"path": "lambda-test"
-		},
-		{
 			"path": "command-lambda"
 		},
 		{
@@ -14,6 +11,9 @@
 		},
 		{
 			"path": "terraform"
+		},
+		{
+			"path": "scripts"
 		}
 	]
 }

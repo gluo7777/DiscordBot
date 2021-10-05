@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "compile": "tsc",
+    "postcompile": "cp package*.json build && cd build && npm install --only=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

@@ -14,20 +14,27 @@ function log(){
         ##################################"
 }
 
+mkdir -p $ROOT_DIR/terraform/input
+mkdir -p $ROOT_DIR/terraform/output
+
 ########################################################################################
 # Build and copy to target
 ########################################################################################
 
 TARGET_DIR=$ROOT_DIR/terraform/input
-NODE_DIRS=("command-lambda" "interaction-lambda")
+LAMBDAS=("command-lambda" "interaction-lambda")
 
-for DIR in ${NODE_DIRS[@]}
+for LAMBDA in ${LAMBDAS[@]}
 do
-    log "Creating archive for $DIR"
-    cd $ROOT_DIR/$DIR;
+    log "Building $LAMBDA"
+    cd $ROOT_DIR/$LAMBDA;
     npm install;
     npm run compile;
+    npm run postcompile;
     cd $ROOT_DIR;
-    zip -j $TARGET_DIR/$DIR.zip $DIR/build/*
-    find $DIR/build -type f \( -exec sha256sum "$PWD"/{} \; \) | awk '{print $1}' | sort | sha256sum > terraform/input/$DIR.sha256sum
+    # log "Creating symbolic link for $LAMBDA"
+    # ln -sF "${ROOT_DIR}/${LAMBDA}/build/" "${TARGET_DIR}/${LAMBDA}"
+    log "Copying files to target for $LAMBDA"
+    mkdir -p ${TARGET_DIR}/${LAMBDA}
+    cp -r ${ROOT_DIR}/${LAMBDA}/build/* ${TARGET_DIR}/${LAMBDA}
 done
