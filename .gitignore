@@ -5,3 +5,4 @@ build
 *.sha256sum
 terraform/input
 terraform/output
+**/examples/**

@@ -18,21 +18,18 @@ export const handler = async (
     // POST /webhooks/<application_id>/<interaction_token> to send a new followup message
     // https://discord.com/developers/docs/interactions/receiving-and-responding#create-followup-message
     const jsonBody = JSON.parse(event.jsonBody);
-    const interaction_id = jsonBody['id'];
+    const interaction_token = jsonBody['token'];
     const response = {
-        type: 4,
-        data: {
-            tts: false,
-            content: "Hello World!",
-            embeds: [],
-            allowed_mentions: {
-                parse: []
-            }
+        tts: false,
+        content: "Hello World!",
+        embeds: [],
+        allowed_mentions: {
+            parse: []
         }
     };
     const application_id = await get_application_id;
     const bot_token = await get_bot_token;
-    const webhook_url = `${discord_api_url}/webhooks/${await application_id}/${interaction_id}`;
+    const webhook_url = `${discord_api_url}/webhooks/${await application_id}/${interaction_token}`;
     const discord_rsp = await axios.post(webhook_url, {
         jsonBody: response,
     }, {
